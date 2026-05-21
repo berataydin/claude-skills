@@ -14,7 +14,6 @@ Stdlib-only. Per-line whitelist via inline marker:
   <!-- handoff:allow secret -->
 """
 
-from __future__ import annotations
 
 import argparse
 import json

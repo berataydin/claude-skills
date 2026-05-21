@@ -14,7 +14,6 @@ Disable per-session with HANDOFF_SESSIONSTART=0.
 Stdlib-only.
 """
 
-from __future__ import annotations
 
 import datetime as dt
 import os

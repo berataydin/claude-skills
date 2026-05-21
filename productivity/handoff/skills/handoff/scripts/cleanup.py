@@ -9,7 +9,6 @@ surface for notes.
 Stdlib-only.
 """
 
-from __future__ import annotations
 
 import argparse
 import datetime as dt

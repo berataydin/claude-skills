@@ -7,7 +7,6 @@ fills in the bodies. Prints the resulting path to stdout.
 Stdlib-only.
 """
 
-from __future__ import annotations
 
 import argparse
 import datetime as dt

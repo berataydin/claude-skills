@@ -8,7 +8,6 @@ discipline: do not list 20 skills.
 Stdlib-only.
 """
 
-from __future__ import annotations
 
 import argparse
 import json

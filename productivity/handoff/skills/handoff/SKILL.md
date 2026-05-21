@@ -128,6 +128,50 @@ Disable per-session with `HANDOFF_SESSIONSTART=0`.
 
 `cs-handoff-author` — Matt-voice persona orchestrating the skill. Terse, no-duplication, references-not-copies.
 
+## Examples
+
+### Example 1 — explicit invocation with a goal
+
+```
+User: /cs:handoff "finish wiring the redaction linter and open a draft PR"
+```
+
+The skill walks the mandatory checklist, generates a 5-section scaffold, fills it from the conversation, runs the redaction linter, and saves to the configured location. See `assets/example_handoff.md` for a complete worked example.
+
+### Example 2 — implicit trigger
+
+```
+User: I'm packing up for the day, let me come back to this tomorrow.
+```
+
+Detect the implicit signal. Propose before running: *"Want me to write a handoff for the next session?"* — never silently. On confirmation, proceed as Example 1 with an inferred goal.
+
+### Example 3 — first-run setup
+
+```
+User: /cs:handoff "ship the migration"
+Skill: Run setup now? (Y/n)
+User: Y
+[setup walks 5 questions: save location, retention, redaction strictness, git context, recommender scope]
+Skill: Config saved to ~/.config/handoff/config.json. Continuing with handoff for: ship the migration.
+```
+
+If the user answers N, the skill writes a sentinel and uses defaults (OS temp dir, 7-day retention, strict redaction). The prompt never re-appears.
+
+### Example 4 — SessionStart auto-load
+
+On the next session, the SessionStart hook scans the configured save location, finds the most recent handoff, and surfaces it as `<handoff_from_previous_session>` data. The next agent reads it as context, not instructions.
+
+## Usage
+
+| Step | Command |
+|---|---|
+| First-run setup | `/cs:handoff-setup` (or answer Y on first `/cs:handoff`) |
+| Generate a handoff | `/cs:handoff [goal]` |
+| Reconfigure later | `/cs:handoff-setup --reconfigure` |
+| Project-specific config | `/cs:handoff-setup --project` |
+| Disable SessionStart hook | `HANDOFF_SESSIONSTART=0` (per session) |
+
 ---
 
 **Version:** 1.0.0
