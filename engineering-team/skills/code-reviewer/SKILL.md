@@ -1,6 +1,6 @@
 ---
 name: "code-reviewer"
-description: Code review automation for TypeScript, JavaScript, Python, Go, Swift, Kotlin, C#, and .NET. Analyzes PRs for complexity and risk, checks code quality for SOLID violations and code smells, generates review reports. Use when reviewing pull requests, analyzing code quality, identifying issues, generating review checklists.
+description: Code review automation for TypeScript, JavaScript, Python, Go, Swift, Kotlin, C#, .NET, and Java. Analyzes PRs for complexity and risk, checks code quality for SOLID violations and code smells, generates review reports. Use when reviewing pull requests, analyzing code quality, identifying issues, generating review checklists.
 ---
 
 # Code Reviewer
@@ -9,14 +9,40 @@ Automated code review tools for analyzing pull requests, detecting code quality 
 
 ---
 
-## Table of Contents
+## How This Skill Is Organized
 
-- [Tools](#tools)
-  - [PR Analyzer](#pr-analyzer)
-  - [Code Quality Checker](#code-quality-checker)
-  - [Review Report Generator](#review-report-generator)
-- [Reference Guides](#reference-guides)
-- [Languages Supported](#languages-supported)
+```
+code-reviewer/
+  SKILL.md                        ← you are here (tools + dispatch table)
+  rules/
+    universal.md                  ← security, async, resources, exceptions, performance — all languages
+  languages/
+    python.md                     ← Python-specific rules + idioms
+    typescript.md                 ← TypeScript / JavaScript-specific rules + idioms
+    go.md                         ← Go-specific rules + idioms
+    swift.md                      ← Swift-specific rules + idioms
+    kotlin.md                     ← Kotlin-specific rules + idioms
+    csharp.md                     ← C# / .NET-specific rules + idioms
+    java.md                       ← Java-specific rules + idioms
+```
+
+### Loading order for every review
+
+1. This file (`SKILL.md`) — tools and thresholds
+2. `rules/universal.md` — always, for every language
+3. The matching `languages/*.md` — one file based on the extension table below
+
+That's always exactly **2 additional files**, regardless of scope.
+
+| Extension(s) | Load |
+|---|---|
+| `.py` | `languages/python.md` |
+| `.ts`, `.tsx`, `.js`, `.jsx`, `.mjs` | `languages/typescript.md` |
+| `.go` | `languages/go.md` |
+| `.swift` | `languages/swift.md` |
+| `.kt`, `.kts` | `languages/kotlin.md` |
+| `.cs`, `.csx`, `.razor`, `.cshtml` | `languages/csharp.md` |
+| `.java` | `languages/java.md` |
 
 ---
 
@@ -37,15 +63,12 @@ python scripts/pr_analyzer.py . --base main --head feature-branch
 python scripts/pr_analyzer.py /path/to/repo --json
 ```
 
-**What it detects:**
+**What it detects (universal — see also language file for language-specific signals):**
 - Hardcoded secrets (passwords, API keys, tokens, connection strings)
-- SQL injection patterns (string concatenation in queries)
-- Debug statements (debugger, console.log, Debug.WriteLine)
-- ESLint / Roslyn analyzer rule disabling (`#pragma warning disable`, `[SuppressMessage]`)
-- TypeScript `any` types / C# `dynamic` overuse
+- SQL / query injection patterns
+- Debug statements left in production code
+- Lint / analyzer suppression annotations
 - TODO/FIXME comments
-- Unsafe code blocks (`unsafe { }` in C#)
-- Nullable reference type suppressions (`!` null-forgiving operator overuse)
 
 **Output includes:**
 - Complexity score (1-10)
@@ -63,26 +86,14 @@ Analyzes source code for structural issues, code smells, and SOLID violations.
 # Analyze a directory
 python scripts/code_quality_checker.py /path/to/code
 
-# Analyze specific language (valid values: python, typescript, javascript, go, swift, kotlin, csharp)
-python scripts/code_quality_checker.py . --language python
+# Analyze specific language (valid values: python, typescript, javascript, go, swift, kotlin, csharp, java)
+python scripts/code_quality_checker.py . --language java
 
 # JSON output
 python scripts/code_quality_checker.py /path/to/code --json
 ```
 
-**What it detects:**
-- Long functions/methods (>50 lines)
-- Large files (>500 lines)
-- God classes (>20 methods)
-- Deep nesting (>4 levels)
-- Too many parameters (>5)
-- High cyclomatic complexity
-- Missing error handling (bare `catch` / `catch (Exception)` swallowing)
-- Unused imports / unnecessary `using` directives
-- Magic numbers
-- C#-specific: missing `async`/`await` on async paths, `Task` not awaited, `IDisposable` not disposed
-
-**Thresholds:**
+**Universal thresholds:**
 
 | Issue | Threshold |
 |-------|-----------|
@@ -92,6 +103,8 @@ python scripts/code_quality_checker.py /path/to/code --json
 | Too many params | >5 |
 | Deep nesting | >4 levels |
 | High complexity | >10 branches |
+
+Language-specific checks are defined in each `languages/*.md` file.
 
 ---
 
@@ -112,13 +125,6 @@ python scripts/review_report_generator.py . \
   --quality-analysis quality_results.json
 ```
 
-**Report includes:**
-- Review verdict (approve, request changes, block)
-- Score (0-100)
-- Prioritized action items
-- Issue summary by severity
-- Suggested review order
-
 **Verdicts:**
 
 | Score | Verdict |
@@ -130,91 +136,9 @@ python scripts/review_report_generator.py . \
 
 ---
 
-## Reference Guides
+## Adding a New Language
 
-### Code Review Checklist
-`references/code_review_checklist.md`
-
-Systematic checklists covering:
-- Pre-review checks (build, tests, PR hygiene)
-- Correctness (logic, data handling, error handling)
-- Security (input validation, injection prevention)
-- Performance (efficiency, caching, scalability)
-- Maintainability (code quality, naming, structure)
-- Testing (coverage, quality, mocking)
-- Language-specific checks (including C# / .NET)
-
-### Coding Standards
-`references/coding_standards.md`
-
-Language-specific standards for:
-- TypeScript (type annotations, null safety, async/await)
-- JavaScript (declarations, patterns, modules)
-- Python (type hints, exceptions, class design)
-- Go (error handling, structs, concurrency)
-- Swift (optionals, protocols, errors)
-- Kotlin (null safety, data classes, coroutines)
-- **C# / .NET** (nullable reference types, async/await, LINQ, dependency injection, exception handling, record types, pattern matching)
-
-### Common Antipatterns
-`references/common_antipatterns.md`
-
-Antipattern catalog with examples and fixes:
-- Structural (god class, long method, deep nesting)
-- Logic (boolean blindness, stringly typed code)
-- Security (SQL injection, hardcoded credentials, unvalidated input in ASP.NET)
-- Performance (N+1 queries, unbounded collections, `async void`, blocking on async code with `.Result` / `.Wait()`)
-- Testing (duplication, testing implementation)
-- Async (floating promises, callback hell, `async void` in C#, deadlocks from `.GetAwaiter().GetResult()`)
-- **C# / .NET-specific**: catching and swallowing `Exception`, missing `ConfigureAwait`, overuse of `dynamic`, not disposing `IDisposable` resources, mutable public setters on domain models
-
----
-
-## C# / .NET Review Notes
-
-When reviewing C# or .NET code, pay special attention to:
-
-### Async / Await
-- Flag `async void` methods (except event handlers) — they can't be awaited and swallow exceptions
-- Flag `.Result`, `.Wait()`, or `.GetAwaiter().GetResult()` on `Task` — causes deadlocks in ASP.NET contexts
-- Flag missing `ConfigureAwait(false)` in library code
-
-### Nullable Reference Types
-- Flag excessive use of the null-forgiving operator (`!`) without justification
-- Ensure nullable annotations are enabled at the project level (`<Nullable>enable</Nullable>`)
-- Flag unchecked dereferences of potentially null values
-
-### Resource Management
-- Flag `IDisposable` objects not wrapped in `using` / `using var`
-- Flag `HttpClient` instantiated with `new` inside methods (should be injected or use `IHttpClientFactory`)
-- Flag `DbContext` not scoped correctly in DI
-
-### Exception Handling
-- Flag bare `catch { }` or `catch (Exception) { }` that swallows exceptions silently
-- Flag catching `Exception` when a more specific type is appropriate
-- Flag exceptions used for control flow
-
-### LINQ
-- Flag `.ToList()` / `.ToArray()` called prematurely on queryables, forcing unnecessary DB round-trips
-- Flag `First()` where `FirstOrDefault()` is safer
-- Flag complex LINQ chains that would be clearer as explicit loops
-
-### Security (ASP.NET)
-- Flag raw string interpolation in SQL queries — require parameterized queries or EF Core
-- Flag missing `[ValidateAntiForgeryToken]` on state-changing controller actions
-- Flag user-controlled data passed to `Process.Start()` or `File` APIs without validation
-- Flag hardcoded connection strings in source (should use `appsettings.json` + secrets management)
-
----
-
-## Languages Supported
-
-| Language | Extensions |
-|----------|------------|
-| Python | `.py` |
-| TypeScript | `.ts`, `.tsx` |
-| JavaScript | `.js`, `.jsx`, `.mjs` |
-| Go | `.go` |
-| Swift | `.swift` |
-| Kotlin | `.kt`, `.kts` |
-| **C# / .NET** | **`.cs`, `.csx`, `.razor`, `.cshtml`** |
+1. Create `languages/<name>.md` using any existing language file as a template — it must have sections: PR Analyzer Signals, Code Quality Checks, Security, Async, Resource Management, Exception Handling, Performance, Idioms.
+2. Add the extension row to the dispatch table above.
+3. Add the `--language` value to the Code Quality Checker comment.
+4. No other files need to change.
