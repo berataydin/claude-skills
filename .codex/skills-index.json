@@ -1363,7 +1363,7 @@
     },
     {
       "name": "universal-scraping-architect",
-      "source": "../../engineering/universal-scraping-architect",
+      "source": "../../engineering/universal-scraping-architect/skills/universal-scraping-architect",
       "category": "engineering-advanced",
       "description": "Use for web scraping, crawling, document extraction, API parsing, or building validation-heavy data pipelines using Firecrawl or local Python scripts."
     },
