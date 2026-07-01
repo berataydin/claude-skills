@@ -14,7 +14,6 @@ Output: Human-readable mismatch report + JSON summary.
 """
 
 import json
-import sys
 import re
 import argparse
 from typing import Dict, List, Optional, Tuple

@@ -15,7 +15,6 @@ Output: JSON-LD block(s) ready for <script type="application/ld+json"> tags.
 """
 
 import json
-import sys
 import argparse
 from typing import Dict, List, Optional
 
@@ -42,11 +41,6 @@ def build_local_business(config: Dict) -> Dict:
             "postalCode": address.get('zip', ''),
             "addressCountry": "US"
         },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": config.get('latitude', ''),
-            "longitude": config.get('longitude', '')
-        },
         "openingHoursSpecification": _build_hours(config.get('hours', {})),
         "sameAs": config.get('social_profiles', []),
         "hasMap": config.get('google_maps_url', ''),
@@ -54,6 +48,12 @@ def build_local_business(config: Dict) -> Dict:
         "knowsAbout": config.get('services', []),
         "aggregateRating": _build_aggregate_rating(config.get('reviews', {})),
     }
+    # Only emit geo coordinates when BOTH are supplied — blank lat/long is invalid
+    # per the Rich Results validator this skill tells users to run.
+    lat = config.get('latitude', '')
+    lng = config.get('longitude', '')
+    if lat not in ('', None) and lng not in ('', None):
+        schema["geo"] = {"@type": "GeoCoordinates", "latitude": lat, "longitude": lng}
     # Clean empty values
     schema = {k: v for k, v in schema.items() if v not in ('', [], {}, None)}
     return schema

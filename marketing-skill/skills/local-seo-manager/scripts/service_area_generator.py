@@ -14,7 +14,6 @@ Output: Page brief as markdown, ready to hand to content-production skill or wri
 """
 
 import json
-import sys
 import argparse
 from typing import Dict, List, Optional
 
@@ -44,7 +43,7 @@ def build_page_brief(
 
     title = f"{primary_service} in {neighborhood}, {city} | {business_name}"
     meta_desc = (
-        f"{business_name} provides professional {primary_service.lower()} in {neighborhood}, {city}. "
+        f"{business_name} provides professional {primary_service.lower()} in {neighborhood}, {city}, {state}. "
         f"Same-day service available. Call {phone} or book online."
     )
 
@@ -79,6 +78,7 @@ def build_page_brief(
     lines.append(f"- Neighborhood name in first sentence")
     lines.append(f"- Primary service ({primary_service.lower()}) in first two sentences")
     lines.append(f"- {business_name}'s years of experience ({years_in_business} years)")
+    lines.append(f"- Identify {business_name} as a {business_type} business, and reference the core services offered: {service_list}")
     lines.append(f"- One specific local reference (landmark, cross-street, or characteristic of {neighborhood})")
     if landmark:
         lines.append(f"- Suggested landmark to mention: {landmark}")
@@ -128,7 +128,7 @@ def build_page_brief(
     lines.append(f"- Phone: {phone}")
     lines.append(f"- Website: {website}")
     lines.append(f"- Hours (if known)")
-    lines.append(f"- Restate service area: '{business_name} serves {neighborhood} and surrounding areas in {city}.'")
+    lines.append(f"- Restate service area: '{business_name} serves {neighborhood} and surrounding areas in {city}, {state}.'")
     lines.append("")
 
     lines.append("---")
