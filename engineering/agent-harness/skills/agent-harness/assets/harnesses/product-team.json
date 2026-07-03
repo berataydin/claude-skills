@@ -357,16 +357,72 @@
     {
       "name": "product-skills",
       "path": "product-team/skills/product-skills",
-      "description": "Router/index for the 12 product skills bundled in this plugin (RICE prioritization, OKRs, UX research, design tokens, competitive teardown, analytics, experiments, discovery, roadmaps, spec-to-repo, landing pages, SaaS scaffolding). Use when a product request doesn't obviously match one skill and you need to pick the right one (e.g., 'help me prioritize features', 'plan a product experiment').",
-      "tools": [],
+      "description": "Use when coordinating product work across the 12 bundled product sub-skills (RICE, OKRs, UX research, design tokens, competitive teardown, analytics, experiments, discovery, roadmaps, spec-to-repo, landing pages, SaaS scaffolding) or the 4 standalone product-team plugins (user stories, Apple HIG, code-to-PRD, research summarizer). Triggers on 'help me prioritize', 'plan a product experiment', 'we ship features nobody uses', 'run the discovery loop', 'is our OST sound'. Forks context to route to one sub-skill via a deterministic signal router and returns a digest; can also drive a continuous-di",
+      "tools": [
+        {
+          "script": "product-team/skills/product-skills/scripts/discovery_cadence_tracker.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/discovery_cadence_tracker.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/discovery_cadence_tracker.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "product-team/skills/product-skills/scripts/ost_linter.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/ost_linter.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/ost_linter.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        },
+        {
+          "script": "product-team/skills/product-skills/scripts/product_goal_router.py",
+          "wired": true,
+          "supports_sample": true,
+          "verification": [
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/product_goal_router.py --help",
+              "expect_exit": 0,
+              "kind": "smoke"
+            },
+            {
+              "cmd": "python3 product-team/skills/product-skills/scripts/product_goal_router.py --sample",
+              "expect_exit": 0,
+              "kind": "sample"
+            }
+          ]
+        }
+      ],
       "agentic_signals": {
         "goal_intake": true,
-        "refusal_gate": false,
-        "verification": false,
-        "loop_discipline": false,
-        "close_out": false
+        "refusal_gate": true,
+        "verification": true,
+        "loop_discipline": true,
+        "close_out": true
       },
-      "references": []
+      "references": [
+        "ai_product_evals.md",
+        "continuous_discovery_canon.md",
+        "product_operating_model.md"
+      ]
     },
     {
       "name": "product-strategist",
