@@ -18,7 +18,7 @@ A mini demonstration bundle of the format. Fictional company (a neighborhood caf
 | 2 | Strategy | ⬜ |
 | 3 | Market | ⬜ |
 
-**Suggested next step:** finish `00-fundacao/problema-solucao.md` and start PHASE 2 (Strategy).
+**Suggested next step:** add `00-fundacao/manifesto.md` to complete PHASE 1, then start PHASE 2 (Strategy).
 
 ## Folders
 

@@ -67,7 +67,7 @@ The interview script. Run **in order**. In each phase: (a) state the objective i
 
 ## PHASE 11 — Legal & Compliance (`10-juridico`)
 **Objective:** give the operation legal grounding.
-**Questions:** Entity type and ownership split (partners and %)? Partners/collaborators with a contract to formalize? What customer data do you handle (data-protection law)? Do you need a sector license/regulation?
+**Questions:** Entity type and ownership split (partners and %)? Partners/collaborators with a contract to formalize? What customer data do you handle (data-protection law — e.g. GDPR / LGPD / CCPA, per jurisdiction)? Do you need a sector license/regulation?
 **Generates:** `estrutura-societaria.md`, `compliance.md`, templates in `contratos/`.
 > Always include in the body: *"these are base documents; they do not replace review by a lawyer".*
 
